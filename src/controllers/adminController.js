@@ -108,7 +108,11 @@ exports.getAllAdmins = (req, res) => {
 };
 
 exports.getAdminById = (req, res) => {
-  const { id } = req.params;
+  const id = req.admin?.id;
+
+  if (!id) {
+    return res.status(401).json({ message: "Unauthorized" });
+  }
 
   Admin.findById(id, (err, result) => {
     if (err) return res.status(500).json({ error: err });
