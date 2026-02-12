@@ -1,6 +1,7 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const Admin = require("../models/adminModel");
+const APP_TIMEZONE = "Asia/Kolkata";
 
 const ALLOWED_OPTIONAL_FIELDS = [
   "last_name",
@@ -34,6 +35,33 @@ function pickDefinedFields(payload, fields) {
   });
 
   return result;
+}
+
+function formatDateTimeInTimeZone(dateValue, timeZone = APP_TIMEZONE) {
+  if (!dateValue) return null;
+  if (
+    typeof dateValue === "string" &&
+    /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/.test(dateValue)
+  ) {
+    return dateValue;
+  }
+
+  const date = new Date(dateValue);
+  if (Number.isNaN(date.getTime())) return null;
+
+  const parts = new Intl.DateTimeFormat("en-CA", {
+    timeZone,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: false
+  }).formatToParts(date);
+
+  const get = (type) => parts.find((p) => p.type === type)?.value || "";
+  return `${get("year")}-${get("month")}-${get("day")} ${get("hour")}:${get("minute")}:${get("second")}`;
 }
 
 exports.register = (req, res) => {
@@ -159,7 +187,7 @@ exports.login = (req, res) => {
       return res.status(404).json({ message: "Admin not found" });
 
     const admin = result[0];
-    const previousLastLoginAt = admin.last_login_at ?? null;
+    const previousLastLoginAt = formatDateTimeInTimeZone(admin.last_login_at);
 
     bcrypt.compare(password, admin.password, (compareErr, isMatch) => {
       if (compareErr) return res.status(500).json({ error: compareErr });
@@ -181,7 +209,7 @@ exports.login = (req, res) => {
         return res.status(500).json({ error: signErr.message });
       }
 
-      const currentLoginAt = new Date();
+      const currentLoginAt = formatDateTimeInTimeZone(new Date());
       const loginMeta = {
         last_login_at: currentLoginAt,
         last_login_ip: req.ip
@@ -194,7 +222,8 @@ exports.login = (req, res) => {
           message: "Login successful",
           token,
           last_login_at: previousLastLoginAt,
-          current_login_at: currentLoginAt
+          current_login_at: currentLoginAt,
+          timezone: APP_TIMEZONE
         });
       });
     });

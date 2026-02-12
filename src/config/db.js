@@ -10,7 +10,9 @@ function getConnectionConfig() {
       port: Number(url.port || 3306),
       user: decodeURIComponent(url.username),
       password: decodeURIComponent(url.password),
-      database: url.pathname.replace(/^\//, "")
+      database: url.pathname.replace(/^\//, ""),
+      timezone: "+05:30",
+      dateStrings: true
     };
 
     const useSsl =
@@ -29,7 +31,9 @@ function getConnectionConfig() {
     host: process.env.DB_HOST,
     user: process.env.DB_USER,
     password: process.env.DB_PASS,
-    database: process.env.DB_NAME
+    database: process.env.DB_NAME,
+    timezone: "+05:30",
+    dateStrings: true
   };
 }
 
