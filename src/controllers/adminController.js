@@ -159,6 +159,7 @@ exports.login = (req, res) => {
       return res.status(404).json({ message: "Admin not found" });
 
     const admin = result[0];
+    const previousLastLoginAt = admin.last_login_at;
 
     bcrypt.compare(password, admin.password, (compareErr, isMatch) => {
       if (compareErr) return res.status(500).json({ error: compareErr });
@@ -180,9 +181,19 @@ exports.login = (req, res) => {
         return res.status(500).json({ error: signErr.message });
       }
 
-      res.json({
-        message: "Login successful",
-        token
+      const loginMeta = {
+        last_login_at: new Date(),
+        last_login_ip: req.ip
+      };
+
+      Admin.updateById(admin.id, loginMeta, (updateErr) => {
+        if (updateErr) return res.status(500).json({ error: updateErr });
+
+        return res.json({
+          message: "Login successful",
+          token,
+          last_login_at: previousLastLoginAt
+        });
       });
     });
   });
