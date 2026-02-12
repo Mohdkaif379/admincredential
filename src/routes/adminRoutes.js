@@ -8,7 +8,7 @@ router.post("/register", adminController.register);
 router.post("/login", adminController.login);
 router.get("/", authMiddleware, adminController.getAllAdmins);
 router.get("/:id", authMiddleware, adminController.getAdminById);
-router.put("/:id", authMiddleware, adminController.updateAdminById);
+router.put("/update", authMiddleware, adminController.updateAdminById);
 router.delete("/:id", authMiddleware, adminController.deleteAdminById);
 
 module.exports = router;

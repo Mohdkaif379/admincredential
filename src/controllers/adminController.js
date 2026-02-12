@@ -121,8 +121,12 @@ exports.getAdminById = (req, res) => {
 };
 
 exports.updateAdminById = (req, res) => {
-  const { id } = req.params;
+  const id = req.admin?.id;
   const { first_name, email, password } = req.body;
+
+  if (!id) {
+    return res.status(401).json({ message: "Unauthorized" });
+  }
 
   const updateData = {
     ...pickDefinedFields(req.body, ALLOWED_OPTIONAL_FIELDS)
