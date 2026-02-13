@@ -236,3 +236,29 @@ exports.login = (req, res) => {
     });
   });
 };
+
+exports.uploadProfileImage = (req, res) => {
+  const id = req.admin?.id;
+
+  if (!id) {
+    return res.status(401).json({ message: "Unauthorized" });
+  }
+
+  if (!req.file) {
+    return res.status(400).json({ message: "profile_image is required" });
+  }
+
+  const imagePath = `/uploads/admins/${req.file.filename}`;
+
+  Admin.updateById(id, { profile_image: imagePath }, (err, result) => {
+    if (err) return res.status(500).json({ error: err });
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: "Admin not found" });
+    }
+
+    return res.json({
+      message: "Profile image uploaded successfully",
+      profile_image: imagePath
+    });
+  });
+};
