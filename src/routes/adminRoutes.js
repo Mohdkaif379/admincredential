@@ -9,7 +9,15 @@ router.post("/register", adminController.register);
 router.post("/login", adminController.login);
 router.get("/", authMiddleware, adminController.getAllAdmins);
 router.get("/profile", authMiddleware, adminController.getAdminById);
-router.put("/update", authMiddleware, adminController.updateAdminById);
+router.put(
+  "/update",
+  authMiddleware,
+  upload.fields([
+    { name: "profile_image", maxCount: 1 },
+    { name: "image", maxCount: 1 }
+  ]),
+  adminController.updateAdminById
+);
 router.post(
   "/profile-image",
   authMiddleware,

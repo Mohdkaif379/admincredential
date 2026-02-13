@@ -63,6 +63,29 @@ function formatDateTimeInTimeZone(dateValue, timeZone = APP_TIMEZONE) {
   return `${get("year")}-${get("month")}-${get("day")} ${get("hour")}:${get("minute")}:${get("second")}`;
 }
 
+function toAbsoluteUrl(req, pathValue) {
+  if (!pathValue) return pathValue;
+  if (typeof pathValue !== "string") return pathValue;
+  if (/^https?:\/\//i.test(pathValue)) return pathValue;
+
+  const host = req.get("host");
+  if (!host) return pathValue;
+
+  const proto = req.protocol || "http";
+  const normalized = pathValue.startsWith("/") ? pathValue : `/${pathValue}`;
+  return `${proto}://${host}${normalized}`;
+}
+
+function withFullProfileImage(req, admin) {
+  if (!admin || typeof admin !== "object") return admin;
+  if (!admin.profile_image) return admin;
+
+  return {
+    ...admin,
+    profile_image: toAbsoluteUrl(req, admin.profile_image)
+  };
+}
+
 exports.register = (req, res) => {
   const { first_name, email, password } = req.body;
 
@@ -102,7 +125,10 @@ exports.register = (req, res) => {
 exports.getAllAdmins = (req, res) => {
   Admin.findAll((err, result) => {
     if (err) return res.status(500).json({ error: err });
-    return res.json({ count: result.length, data: result });
+    return res.json({
+      count: result.length,
+      data: result.map((admin) => withFullProfileImage(req, admin))
+    });
   });
 };
 
@@ -119,24 +145,34 @@ exports.getAdminById = (req, res) => {
       return res.status(404).json({ message: "Admin not found" });
     }
 
-    return res.json(result[0]);
+    return res.json(withFullProfileImage(req, result[0]));
   });
 };
 
 exports.updateAdminById = (req, res) => {
   const id = req.admin?.id;
-  const { first_name, email, password } = req.body;
+  const body = req.body || {};
+  const { first_name, email, password } = body;
 
   if (!id) {
     return res.status(401).json({ message: "Unauthorized" });
   }
 
   const updateData = {
-    ...pickDefinedFields(req.body, ALLOWED_OPTIONAL_FIELDS)
+    ...pickDefinedFields(body, ALLOWED_OPTIONAL_FIELDS)
   };
 
   if (first_name !== undefined) updateData.first_name = first_name;
   if (email !== undefined) updateData.email = email;
+
+  const uploadedFile =
+    req.file ||
+    req.files?.profile_image?.[0] ||
+    req.files?.image?.[0];
+
+  if (uploadedFile) {
+    updateData.profile_image = `/uploads/admins/${uploadedFile.filename}`;
+  }
 
   const performUpdate = (data) => {
     if (Object.keys(data).length === 0) {
@@ -258,7 +294,7 @@ exports.uploadProfileImage = (req, res) => {
 
     return res.json({
       message: "Profile image uploaded successfully",
-      profile_image: imagePath
+      profile_image: toAbsoluteUrl(req, imagePath)
     });
   });
 };
