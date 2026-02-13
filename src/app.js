@@ -5,6 +5,7 @@ const multer = require("multer");
 require("dotenv").config();
 
 const adminRoutes = require("./routes/adminRoutes");
+const studentRoutes = require("./routes/studentRoutes");
 
 const app = express();
 
@@ -14,6 +15,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use("/uploads", express.static(path.join(__dirname, "..", "uploads")));
 
 app.use("/api/admin", adminRoutes);
+app.use("/api/students", studentRoutes);
 
 app.use((err, req, res, next) => {
   if (err instanceof multer.MulterError) {
