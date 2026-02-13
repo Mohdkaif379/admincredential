@@ -25,7 +25,6 @@ CREATE TABLE IF NOT EXISTS admins (
 
   two_factor_enabled TINYINT(1) DEFAULT 0,
   failed_login_attempts INT DEFAULT 0,
-  account_locked_until DATETIME,
 
   created_by VARCHAR(100),
   updated_by VARCHAR(100),

@@ -20,7 +20,6 @@ const ALLOWED_OPTIONAL_FIELDS = [
   "phone_verified",
   "two_factor_enabled",
   "failed_login_attempts",
-  "account_locked_until",
   "created_by",
   "updated_by"
 ];

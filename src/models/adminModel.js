@@ -12,13 +12,13 @@ exports.findByEmail = (email, callback) => {
 
 exports.findAll = (callback) => {
   const sql =
-    "SELECT id, first_name, last_name, username, email, phone, role, is_super_admin, profile_image, gender, dob, status, email_verified, phone_verified, two_factor_enabled, failed_login_attempts, account_locked_until, last_login_at, last_login_ip, created_by, updated_by, created_at, updated_at FROM admins ORDER BY id DESC";
+    "SELECT id, first_name, last_name, username, email, phone, role, is_super_admin, profile_image, gender, dob, status, email_verified, phone_verified, two_factor_enabled, failed_login_attempts, last_login_at, last_login_ip, created_by, updated_by, created_at, updated_at FROM admins ORDER BY id DESC";
   db.query(sql, callback);
 };
 
 exports.findById = (id, callback) => {
   const sql =
-    "SELECT id, first_name, last_name, username, email, phone, role, is_super_admin, profile_image, gender, dob, status, email_verified, phone_verified, two_factor_enabled, failed_login_attempts, account_locked_until, last_login_at, last_login_ip, created_by, updated_by, created_at, updated_at FROM admins WHERE id = ?";
+    "SELECT id, first_name, last_name, username, email, phone, role, is_super_admin, profile_image, gender, dob, status, email_verified, phone_verified, two_factor_enabled, failed_login_attempts, last_login_at, last_login_ip, created_by, updated_by, created_at, updated_at FROM admins WHERE id = ?";
   db.query(sql, [id], callback);
 };
 
