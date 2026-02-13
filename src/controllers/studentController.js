@@ -35,6 +35,14 @@ function withFullProfileImage(req, student) {
   };
 }
 
+function withClassName(student) {
+  if (!student || typeof student !== "object") return student;
+  if (student.class === undefined && student.class_name !== undefined) {
+    return { ...student, class: student.class_name };
+  }
+  return student;
+}
+
 const ALLOWED_FIELDS = [
   "name",
   "roll_no",
@@ -93,7 +101,7 @@ exports.getAllStudents = (req, res) => {
     if (err) return res.status(500).json({ error: err });
     return res.json({
       count: result.length,
-      data: result.map((s) => withFullProfileImage(req, s))
+      data: result.map((s) => withClassName(withFullProfileImage(req, s)))
     });
   });
 };
@@ -107,7 +115,7 @@ exports.getStudentById = (req, res) => {
       return res.status(404).json({ message: "Student not found" });
     }
 
-    return res.json(withFullProfileImage(req, result[0]));
+    return res.json(withClassName(withFullProfileImage(req, result[0])));
   });
 };
 
