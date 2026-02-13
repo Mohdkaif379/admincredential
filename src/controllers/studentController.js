@@ -43,6 +43,18 @@ const ALLOWED_FIELDS = [
   "dob",
   "gender",
   "profile_image",
+  "father_name",
+  "father_phone",
+  "father_email",
+  "mother_name",
+  "mother_phone",
+  "mother_email",
+  "address_line1",
+  "address_line2",
+  "city",
+  "state",
+  "postal_code",
+  "country",
   "class_id",
   "status"
 ];
@@ -141,4 +153,3 @@ exports.deleteStudentById = (req, res) => {
     return res.json({ message: "Student deleted successfully" });
   });
 };
-
