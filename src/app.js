@@ -8,6 +8,8 @@ const adminRoutes = require("./routes/adminRoutes");
 const classRoutes = require("./routes/classRoutes");
 const studentRoutes = require("./routes/studentRoutes");
 const staffRoutes = require("./routes/staffRoutes");
+const departmentRoutes = require("./routes/departmentRoutes");
+const designationRoutes = require("./routes/designationRoutes");
 
 const app = express();
 
@@ -20,6 +22,8 @@ app.use("/api/admin", adminRoutes);
 app.use("/api/class", classRoutes);
 app.use("/api/students", studentRoutes);
 app.use("/api/staff", staffRoutes);
+app.use("/api/departments", departmentRoutes);
+app.use("/api/designations", designationRoutes);
 
 app.get("/", (req, res) => {
   res.send("Backend is running");
