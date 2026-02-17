@@ -1,28 +1,8 @@
-const fs = require("fs");
-const path = require("path");
 const multer = require("multer");
+const { createCloudinaryStorage } = require("../config/cloudinary");
 
-const UPLOAD_ROOT = path.join(__dirname, "..", "..", "uploads");
-const STUDENT_UPLOAD_DIR = path.join(UPLOAD_ROOT, "students");
-
-function ensureDirExists(dir) {
-  if (!fs.existsSync(dir)) {
-    fs.mkdirSync(dir, { recursive: true });
-  }
-}
-
-ensureDirExists(STUDENT_UPLOAD_DIR);
-
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, STUDENT_UPLOAD_DIR);
-  },
-  filename: (req, file, cb) => {
-    const ext = path.extname(file.originalname || "");
-    const safeExt = ext && ext.length <= 10 ? ext : "";
-    cb(null, `student_${Date.now()}${safeExt}`);
-  }
-});
+// Create Cloudinary storage for student uploads
+const storage = createCloudinaryStorage("students");
 
 function fileFilter(req, file, cb) {
   if (file && typeof file.mimetype === "string" && file.mimetype.startsWith("image/")) {

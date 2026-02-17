@@ -78,7 +78,7 @@ exports.createStudent = (req, res) => {
   const payload = pickDefinedFields(body, ALLOWED_FIELDS);
 
   if (req.file) {
-    payload.profile_image = `/uploads/students/${req.file.filename}`;
+    payload.profile_image = req.file.path;
   }
 
   Student.createStudent(payload, (err, result) => {
@@ -126,7 +126,7 @@ exports.updateStudentById = (req, res) => {
   const updateData = pickDefinedFields(body, ALLOWED_FIELDS);
 
   if (req.file) {
-    updateData.profile_image = `/uploads/students/${req.file.filename}`;
+    updateData.profile_image = req.file.path;
   }
 
   if (Object.keys(updateData).length === 0) {
