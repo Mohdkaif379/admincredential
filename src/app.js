@@ -22,7 +22,7 @@ app.use("/api/students", studentRoutes);
 app.use("/api/staff", staffRoutes);
 
 app.get("/", (req, res) => {
-  res.send("Hello World!");
+  res.send("Backend is running");
 });
 
 app.use((err, req, res, next) => {
