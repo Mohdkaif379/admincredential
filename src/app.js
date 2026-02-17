@@ -21,6 +21,10 @@ app.use("/api/class", classRoutes);
 app.use("/api/students", studentRoutes);
 app.use("/api/staff", staffRoutes);
 
+app.get("/", (req, res) => {
+  res.send("Hello World!");
+});
+
 app.use((err, req, res, next) => {
   if (err instanceof multer.MulterError) {
     return res.status(400).json({ message: err.message, code: err.code });
