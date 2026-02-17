@@ -56,6 +56,8 @@ const ALLOWED_FIELDS = [
 ];
 
 exports.createStaff = (req, res) => {
+  console.log("Create Staff Request Body:", req.body);
+  console.log("Create Staff Request File:", req.file);
   const body = req.body || {};
   const { employee_code, first_name } = body;
 
