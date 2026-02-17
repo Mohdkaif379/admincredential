@@ -171,7 +171,7 @@ exports.updateAdminById = (req, res) => {
     req.files?.image?.[0];
 
   if (uploadedFile) {
-    updateData.profile_image = `/uploads/admins/${uploadedFile.filename}`;
+    updateData.profile_image = uploadedFile.path;
   }
 
   const performUpdate = (data) => {

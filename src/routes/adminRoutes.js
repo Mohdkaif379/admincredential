@@ -3,7 +3,7 @@ const router = express.Router();
 
 const adminController = require("../controllers/adminController");
 const authMiddleware = require("../middlewares/authMiddleware");
-const upload = require("../middlewares/uploadMiddleware");
+const upload = require("../middlewares/adminUploadMiddleware");
 
 router.post("/register", adminController.register);
 router.post("/login", adminController.login);
